@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Spectra Client | Minecraft DLL Download</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            background: #0a0a0f;
+            overflow-x: hidden;
+        }
+
+        /* Animated gradient background */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, #1a0a2e 0%, #0a0a0f 50%, #1a0a2e 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Purple glow orbs */
+        .glow-1 {
+            position: fixed;
+            top: 10%;
+            left: -10%;
+            width: 60vmax;
+            height: 60vmax;
+            background: radial-gradient(circle, rgba(128, 0, 255, 0.3) 0%, rgba(128, 0, 255, 0) 70%);
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: 0;
+            animation: float1 12s ease-in-out infinite;
+        }
+
+        .glow-2 {
+            position: fixed;
+            bottom: -10%;
+            right: -10%;
+            width: 50vmax;
+            height: 50vmax;
+            background: radial-gradient(circle, rgba(160, 80, 255, 0.25) 0%, rgba(160, 80, 255, 0) 70%);
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: 0;
+            animation: float2 10s ease-in-out infinite;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(5%, 5%) scale(1.05); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-5%, -5%) scale(1.08); }
+        }
+
+        /* Top navigation bar */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 2rem;
+            padding: 1rem 3rem;
+            background: rgba(10, 10, 18, 0.7);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(160, 80, 255, 0.2);
+        }
+
+        .nav-link {
+            color: #d0d0e0;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            padding: 0.4rem 0;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: #c07eff;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #a050ff;
+            transition: width 0.2s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-pro {
+            background: linear-gradient(135deg, #7c2ae8, #a050ff);
+            padding: 0.4rem 1.2rem;
+            border-radius: 2rem;
+            color: white;
+        }
+
+        .nav-pro:hover {
+            transform: scale(1.02);
+            background: linear-gradient(135deg, #8c3af8, #b060ff);
+        }
+
+        .nav-pro::after {
+            display: none;
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6rem 4rem 2rem 4rem;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        /* Left side - download section */
+        .download-section {
+            flex: 1;
+            min-width: 320px;
+            background: transparent;
+            padding: 2rem 2rem 2rem 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(160, 80, 255, 0.2);
+            padding: 0.3rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            color: #c07eff;
+            margin-bottom: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, #c07eff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #b0b0c0;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            color: #d0d0e0;
+            font-size: 0.9rem;
+        }
+
+        .feature-list li::before {
+            content: "▸";
+            color: #a050ff;
+            font-size: 1rem;
+        }
+
+        .version-info {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(160, 80, 255, 0.2);
+        }
+
+        .version-box {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 0.75rem;
+            padding: 0.5rem 1rem;
+            text-align: center;
+        }
+
+        .version-label {
+            font-size: 0.7rem;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .version-number {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #c07eff;
+        }
+
+        /* Download button */
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            background: linear-gradient(135deg, #7c2ae8, #a050ff);
+            border: none;
+            border-radius: 3rem;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(160, 80, 255, 0.4);
+        }
+
+        .download-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(160, 80, 255, 0.6);
+            background: linear-gradient(135deg, #8c3af8, #b060ff);
+        }
+
+        .download-btn:active {
+            transform: scale(0.98);
+        }
+
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 1rem;
+        }
+
+        /* Right side - 3D image preview */
+        .preview-section {
+            flex: 1;
+            min-width: 400px;
+            min-height: 500px;
+            background: transparent;
+            border-radius: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+            min-height: 500px;
+            position: relative;
+        }
+
+        .preview-label {
+            position: absolute;
+            bottom: 1rem;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.7rem;
+            color: rgba(160, 80, 255, 0.6);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* Modal base styles with animations */
+        .modal, .warning-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active, .warning-modal.active {
+            display: flex;
+        }
+
+        .modal-overlay, .warning-modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active .modal-overlay, 
+        .warning-modal.active .warning-modal-overlay {
+            opacity: 1;
+        }
+
+        .modal-content, .warning-content {
+            position: relative;
+            background: #12121e;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid rgba(160, 80, 255, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9) translateY(20px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+        }
+
+        .modal.active .modal-content, 
+        .warning-modal.active .warning-content {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        .modal-content h3 {
+            color: #c07eff;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-content p {
+            color: #b0b0c0;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .warning-content {
+            border: 2px solid #ff4444;
+            box-shadow: 0 0 30px rgba(255, 68, 68, 0.3);
+            text-align: center;
+        }
+
+        .warning-content h3 {
+            color: #ff6666;
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+        }
+
+        .warning-content p {
+            color: #e0e0e0;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        .modal-close, .warning-continue, .warning-cancel {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close {
+            background: #7c2ae8;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            color: white;
+            margin-top: 1rem;
+        }
+
+        .modal-close:hover {
+            background: #8c3af8;
+            transform: scale(1.02);
+        }
+
+        .warning-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .warning-continue {
+            background: #ff4444;
+            border: none;
+            padding: 0.7rem 1.8rem;
+            border-radius: 2rem;
+            color: white;
+            font-weight: 600;
+        }
+
+        .warning-continue:hover {
+            background: #ff6666;
+            transform: scale(1.02);
+        }
+
+        .warning-cancel {
+            background: #2a2a3a;
+            border: 1px solid #555;
+            padding: 0.7rem 1.8rem;
+            border-radius: 2rem;
+            color: #ccc;
+            font-weight: 600;
+        }
+
+        .warning-cancel:hover {
+            background: #3a3a4a;
+            transform: scale(1.02);
+        }
+
+        /* Toast animation */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1a1a2e;
+            backdrop-filter: blur(12px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 3rem;
+            border-left: 3px solid #a050ff;
+            color: white;
+            font-size: 0.85rem;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .container {
+                padding: 6rem 2rem 2rem 2rem;
+                flex-direction: column;
+            }
+            .top-bar {
+                padding: 1rem 1.5rem;
+                gap: 1rem;
+            }
+            .download-section, .preview-section {
+                width: 100%;
+            }
+            .download-section {
+                padding: 2rem 0;
+            }
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <div class="glow-1"></div>
+    <div class="glow-2"></div>
+
+    <!-- Top Navigation Bar -->
+    <div class="top-bar">
+        <a class="nav-link" id="discordLink">Discord</a>
+        <a class="nav-link nav-pro" id="proLink">Get Spectra Pro</a>
+        <a class="nav-link" id="whyFreeLink">Why is this free?</a>
+    </div>
+
+    <!-- Modal for "Why is this free?" -->
+    <div class="modal" id="whyModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <h3>Why is Spectra free?</h3>
+            <p>Spectra Client is completely free because we believe in accessible gaming enhancements for everyone. We are funded by community donations and our optional Spectra Pro tier, which offers additional premium features like custom script injection and priority support.</p>
+            <p>The free version includes all essential features: visual enhancements, movement optimization, reach adjustment, and full customization. No paywalls, no hidden fees.</p>
+            <button class="modal-close" id="closeModal">Got it</button>
+        </div>
+    </div>
+
+    <!-- Warning Modal for Download -->
+    <div class="warning-modal" id="warningModal">
+        <div class="warning-modal-overlay"></div>
+        <div class="warning-content">
+            <h3>⚠ WARNING ⚠</h3>
+            <p>You will need a quality injector to inject our DLL safely and ensure you will not get banned. Using a poor injector may result in detection or game crashes.</p>
+            <p>We recommend using trusted injectors only. Spectra Client is not responsible for any bans caused by unsafe injectors.</p>
+            <div class="warning-buttons">
+                <button class="warning-continue" id="continueDownload">I understand, continue</button>
+                <button class="warning-cancel" id="cancelDownload">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Left side: Download Section -->
+        <div class="download-section">
+            <div class="badge">LATEST RELEASE</div>
+            <h1>SPECTRA CLIENT</h1>
+            <div class="subtitle">Premium Minecraft DLL utility mod featuring advanced visual enhancements, movement optimization, and a sleek purple UI. Designed for version 1.8.9 - 1.20.4.</div>
+            
+            <div class="version-info">
+                <div class="version-box">
+                    <div class="version-label">VERSION</div>
+                    <div class="version-number">v3.1.0</div>
+                </div>
+                <div class="version-box">
+                    <div class="version-label">RELEASE DATE</div>
+                    <div class="version-number">2026-04-03</div>
+                </div>
+                <div class="version-box">
+                    <div class="version-label">SIZE</div>
+                    <div class="version-number">2.1 MB</div>
+                </div>
+            </div>
+
+            <ul class="feature-list">
+                <li>Visual enhancement suite with fullbright and custom skybox</li>
+                <li>Movement assistance and optimization tools</li>
+                <li>Reach and hitbox adjustment modules</li>
+                <li>Fully customizable purple/black theme UI</li>
+                <li>Auto-updater and config saving</li>
+                <li>Regular updates for latest Minecraft versions</li>
+            </ul>
+
+            <button class="download-btn" id="downloadBtn">
+                <span>⬇</span> DOWNLOAD SPECTRA.DLL v3.1.0
+            </button>
+            <div class="secure-badge">
+                <span>✓</span> Scanned by 70+ antivirus engines
+                <span>✓</span> Signed DLL
+            </div>
+        </div>
+
+        <!-- Right side: 3D Image Preview -->
+        <div class="preview-section">
+            <div id="canvas-container"></div>
+            <div class="preview-label">3D preview — drag to rotate | Spectra UI preview</div>
+        </div>
+    </div>
+
+    <!-- Three.js library -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'https://unpkg.com/three@0.128.0/examples/jsm/controls/OrbitControls.js';
+
+        // Setup scene
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x050510);
+        scene.backgroundIntensity = 0.3;
+
+        // Camera
+        const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+        camera.position.set(0, 0, 3.5);
+        camera.lookAt(0, 0, 0);
+
+        // Renderer
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(container.clientWidth, 500);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setClearColor(0x050510, 0.8);
+        container.appendChild(renderer.domElement);
+
+        // Controls for interactivity
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 1.5;
+        controls.enableZoom = true;
+        controls.enablePan = false;
+        controls.target.set(0, 0, 0);
+
+        // Purple ambient light
+        const ambientLight = new THREE.AmbientLight(0x332244);
+        scene.add(ambientLight);
+        
+        // Main directional light
+        const mainLight = new THREE.DirectionalLight(0xffffff, 1);
+        mainLight.position.set(2, 3, 2);
+        scene.add(mainLight);
+        
+        // Purple fill light
+        const fillLight = new THREE.PointLight(0xaa66ff, 0.5);
+        fillLight.position.set(-1, 1, 2);
+        scene.add(fillLight);
+        
+        // Back rim light
+        const rimLight = new THREE.PointLight(0xff88ff, 0.4);
+        rimLight.position.set(0, 1, -3);
+        scene.add(rimLight);
+
+        // Create a floating frame for the image
+        const frameGroup = new THREE.Group();
+        scene.add(frameGroup);
+
+        // Create a sleek frame border
+        const frameBorder = new THREE.BoxGeometry(2.2, 2.2, 0.08);
+        const borderMaterial = new THREE.MeshStandardMaterial({
+            color: 0xa050ff,
+            metalness: 0.8,
+            roughness: 0.2,
+            emissive: 0x331166,
+            emissiveIntensity: 0.3
+        });
+        const borderFrame = new THREE.Mesh(frameBorder, borderMaterial);
+        frameGroup.add(borderFrame);
+
+        // Inner frame (darker)
+        const innerFrameGeo = new THREE.BoxGeometry(2.0, 2.0, 0.12);
+        const innerMaterial = new THREE.MeshStandardMaterial({
+            color: 0x0a0a14,
+            metalness: 0.5,
+            roughness: 0.4
+        });
+        const innerFrame = new THREE.Mesh(innerFrameGeo, innerMaterial);
+        frameGroup.add(innerFrame);
+
+        // The image plane with YOUR image
+        let imagePlane = null;
+
+        // Load your image from the URL
+        const userImageUrl = 'https://i.imgur.com/dpY3kNP.png';
+        const textureLoader = new THREE.TextureLoader();
+        const userTexture = textureLoader.load(userImageUrl);
+        
+        function createImagePlane(texture) {
+            if (imagePlane) {
+                frameGroup.remove(imagePlane);
+                if (imagePlane.material) imagePlane.material.dispose();
+            }
+            
+            const geometry = new THREE.PlaneGeometry(1.8, 1.8);
+            const material = new THREE.MeshStandardMaterial({
+                map: texture,
+                side: THREE.DoubleSide,
+                metalness: 0.1,
+                roughness: 0.3,
+                emissive: 0x110022,
+                emissiveIntensity: 0.2
+            });
+            imagePlane = new THREE.Mesh(geometry, material);
+            imagePlane.position.z = 0.07;
+            frameGroup.add(imagePlane);
+        }
+
+        createImagePlane(userTexture);
+
+        // Floating animation
+        let time = 0;
+        
+        // Particles for background effect
+        const particleCount = 600;
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlePositions = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount; i++) {
+            particlePositions[i*3] = (Math.random() - 0.5) * 15;
+            particlePositions[i*3+1] = (Math.random() - 0.5) * 10;
+            particlePositions[i*3+2] = (Math.random() - 0.5) * 10 - 5;
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            color: 0xa060ff,
+            size: 0.02,
+            transparent: true,
+            opacity: 0.4
+        });
+        const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particles);
+        
+        // Subtle grid floor
+        const gridHelper = new THREE.GridHelper(8, 20, 0xa050ff, 0x442288);
+        gridHelper.position.y = -1.5;
+        gridHelper.material.transparent = true;
+        gridHelper.material.opacity = 0.12;
+        scene.add(gridHelper);
+        
+        function showToast(message) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+        
+        // --- Modal animation helpers ---
+        function openModal(modal) {
+            modal.classList.add('active');
+            modal.style.display = 'flex';
+            // Force reflow to trigger transition
+            void modal.offsetHeight;
+        }
+
+        function closeModal(modal) {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                if (!modal.classList.contains('active')) {
+                    modal.style.display = 'none';
+                }
+            }, 300);
+        }
+
+        // --- Download with warning modal logic ---
+        const warningModal = document.getElementById('warningModal');
+        const continueBtn = document.getElementById('continueDownload');
+        const cancelBtn = document.getElementById('cancelDownload');
+
+        function triggerDownload() {
+            const link = document.createElement('a');
+            link.href = 'https://example.com/download/spectra_client_v3.1.0.dll';
+            link.download = 'spectra_client_v3.1.0.dll';
+            link.click();
+            showToast('Download started! Spectra.dll v3.1.0');
+        }
+
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            openModal(warningModal);
+        });
+
+        continueBtn.addEventListener('click', () => {
+            closeModal(warningModal);
+            setTimeout(() => triggerDownload(), 200);
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            closeModal(warningModal);
+            showToast('Download cancelled');
+        });
+
+        // Close warning modal when clicking overlay
+        warningModal.querySelector('.warning-modal-overlay').addEventListener('click', () => {
+            closeModal(warningModal);
+        });
+
+        // Top bar navigation
+        document.getElementById('discordLink').addEventListener('click', () => {
+            window.open('https://discord.gg/P9xGSmJNUJ', '_blank');
+            showToast('Join our Discord community!');
+        });
+
+        document.getElementById('proLink').addEventListener('click', () => {
+            window.open('https://example.com/spectra-pro', '_blank');
+            showToast('Check out Spectra Pro for premium features');
+        });
+
+        // Why free modal
+        const whyModal = document.getElementById('whyModal');
+        document.getElementById('whyFreeLink').addEventListener('click', () => {
+            openModal(whyModal);
+        });
+        document.getElementById('closeModal').addEventListener('click', () => {
+            closeModal(whyModal);
+        });
+        whyModal.querySelector('.modal-overlay').addEventListener('click', () => {
+            closeModal(whyModal);
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.008;
+            
+            frameGroup.position.y = Math.sin(time * 0.5) * 0.03;
+            frameGroup.rotation.z = Math.sin(time * 0.3) * 0.02;
+            
+            particles.rotation.y = time * 0.08;
+            particles.rotation.x = Math.sin(time * 0.2) * 0.05;
+            
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        
+        animate();
+        
+        window.addEventListener('resize', () => {
+            const width = container.clientWidth;
+            const height = 500;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        });
+        
+        window.dispatchEvent(new Event('resize'));
+    </script>
+</body>
+</html>
